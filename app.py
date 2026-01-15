@@ -13,9 +13,9 @@ cursor.execute('CREATE TABLE IF NOT EXISTS projeto (nome_do_projeto TEXT, data_d
 def iniciar_cadastro_usuario():
     print('\nInsira os dados abaixo para iniciar o cadastro')
 
-    nome = input('\nQual o seu nome?' ).lower()
-    data = input('\nQual sua data de nascimento?').lower()
-    telefone = input('\nQual seu numero de telefone?').lower()
+    nome = input('\nQual o seu nome? ' ).lower()
+    data = input('\nQual sua data de nascimento (DD-MM-YYYY): ')
+    telefone = input('\nQual seu numero de telefone? ')
 
     print('\nPara prosseguir com o cadastro, você deve aceitar os termos de uso.')
 
@@ -54,6 +54,48 @@ def iniciar_cadastro_usuario():
         print('\nCadastro executado com sucesso')
     
 iniciar_cadastro_usuario()
+
+def iniciar_cadastro_projeto():  
+
+    cursor.execute('SELECT nome FROM usuario')
+    usuarios = cursor.fetchall()
+
+    if not usuarios:
+        print('\nNão é possível cadastrar projeto sem usuários cadastrados.')
+        return
+
+    print('\nInsira os dados do projeto')
+
+    nome_projeto = input('\nNome do projeto: ').lower()
+    data_inicio = input('Data de início (DD-MM-YYYY): ')
+    data_fim = input('Data de fim (DD-MM-YYYY): ')
+
+    if data_fim < data_inicio:
+        print('\nErro: a data de fim não pode ser menor que a data de início.')
+        return
+
+
+    cursor.execute(
+        'INSERT INTO projeto VALUES (?,?,?)',
+        (nome_projeto, data_inicio, data_fim)
+    )
+
+    print('\nProjeto cadastrado com sucesso!')
+
+iniciar_cadastro_projeto()       
+
+
+#print('\nSelecione o responsável pelo projeto:')
+#    for i, usuario in enumerate(usuarios, start=1):
+#        print(f'{i} - {usuario[0]}')
+#
+#    escolha = int(input('Digite o número do responsável: '))
+#    responsavel = usuarios[escolha - 1][0]
+
+
+
+
+
 
 con.commit()
 con.close() 
