@@ -39,7 +39,7 @@ def iniciar_cadastro_usuario():
             
         if recomeco == 's':
             
-                iniciar_cadastro_usuario()
+            iniciar_cadastro_usuario()
             
         else:
             
