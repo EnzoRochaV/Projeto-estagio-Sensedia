@@ -1,15 +1,13 @@
 import sqlite3
 
 con = sqlite3.connect("sistema.db")
-
 cursor = con.cursor()
-
 
 #criação das tabelas para o banco de dados, somente se elas já não foram criadas
 cursor.execute('CREATE TABLE IF NOT EXISTS usuario (nome TEXT, data_nascimento TEXT, telefone TEXT)')
 cursor.execute('CREATE TABLE IF NOT EXISTS projeto (nome_do_projeto TEXT, data_de_inicio TEXT, data_de_finalização TEXT)')
 
-#função para o inicio do processo de cadastro do usuario, usando a validação do termo de usuario
+#função dedicada ao cadastro de usuario com validasção do termo de uso
 def iniciar_cadastro_usuario():
     print('\nInsira os dados abaixo para iniciar o cadastro')
 
@@ -19,12 +17,15 @@ def iniciar_cadastro_usuario():
 
     print('\nPara prosseguir com o cadastro, você deve aceitar os termos de uso.')
 
-    termo = input('\nVocê aceita os termos de uso? (s/n): ').lower()
+    while True : 
+    
+        termo = input('\nVocê aceita os termos de uso? (s/n): ').lower()
 
-    if termo != 's':
-        print('\nCadastro não concluído. É necessário aceitar os termos de uso.')
-        con.close()
-        exit()
+        if termo != 's':
+            print('\nCadastro não concluído. É necessário aceitar os termos de uso.')
+
+        else :
+            break     
 
 
     verif = cursor.execute('SELECT nome FROM usuario')
@@ -44,17 +45,15 @@ def iniciar_cadastro_usuario():
         else:
             
             print('\nCadastro encerrado.')   
-            con.close()
-            exit()
-
+            return
 
     else : 
     
         cursor.execute('INSERT INTO usuario VALUES (?,?,?)',(nome,data,telefone))
-        print('\nCadastro executado com sucesso')
-    
-iniciar_cadastro_usuario()
+        print('\nCadastro executado com sucesso')    
+        con.commit()
 
+#função dedicada ao cadastro do projeto
 def iniciar_cadastro_projeto():  
 
     cursor.execute('SELECT nome FROM usuario')
@@ -81,21 +80,11 @@ def iniciar_cadastro_projeto():
     )
 
     print('\nProjeto cadastrado com sucesso!')
+    con.commit()
+
+iniciar_cadastro_usuario()
 
 iniciar_cadastro_projeto()       
-
-
-#print('\nSelecione o responsável pelo projeto:')
-#    for i, usuario in enumerate(usuarios, start=1):
-#        print(f'{i} - {usuario[0]}')
-#
-#    escolha = int(input('Digite o número do responsável: '))
-#    responsavel = usuarios[escolha - 1][0]
-
-
-
-
-
 
 con.commit()
 con.close() 
