@@ -88,3 +88,14 @@ iniciar_cadastro_projeto()
 
 con.commit()
 con.close() 
+
+
+
+
+
+#print('\nSelecione o responsável pelo projeto:')
+#    for i, usuario in enumerate(usuarios, start=1):
+#        print(f'{i} - {usuario[0]}')
+#
+#    escolha = int(input('Digite o número do responsável: '))
+#    responsavel = usuarios[escolha - 1][0]
