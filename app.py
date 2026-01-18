@@ -1,5 +1,16 @@
 import sqlite3
 
+from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+
+
 con = sqlite3.connect("sistema.db")
 cursor = con.cursor()
 
@@ -90,7 +101,8 @@ con.commit()
 con.close() 
 
 
-
+if __name__ == "__main__":
+    app.run(debug=True)
 
 
 #print('\nSelecione o responsável pelo projeto:')
