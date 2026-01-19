@@ -7,9 +7,29 @@ app = Flask(__name__)
 con = sqlite3.connect("sistema.db")
 cursor = con.cursor()
 
-#criação das tabelas para o banco de dados, somente se elas já não foram criadas
-cursor.execute('CREATE TABLE IF NOT EXISTS usuario (nome TEXT, data_nascimento TEXT, telefone TEXT)')
-cursor.execute('CREATE TABLE IF NOT EXISTS projeto (nome_do_projeto TEXT, data_de_inicio TEXT, data_de_finalização TEXT)')
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS usuario (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT,
+    telefone TEXT,
+    data_nascimento TEXT
+)
+""")
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS projeto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_do_projeto TEXT,
+    data_inicio TEXT,
+    data_fim TEXT,
+    usuario_id INTEGER,
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+)
+""")
+
+con.commit()
+con.close()
 
 #função para verificar a existencia de usuarios antes do cadastro de projetos
 def existe_usuario():
@@ -45,7 +65,7 @@ def cadastro_usuario():
         cursor = con.cursor()
 
         cursor.execute(
-            "INSERT INTO usuario VALUES (?, ?, ?)",
+            "INSERT INTO usuario (nome, telefone, data_nascimento) VALUES (?, ?, ?)",
             (nome, data, telefone)
         )
 
@@ -61,123 +81,44 @@ def cadastro_usuario():
 #rota flask para cadastro de projeto
 @app.route("/projetos", methods=["GET", "POST"])
 def cadastro_projeto():
-    
+
     if not existe_usuario():
         return "Para cadastrar um projeto, é necessário cadastrar um usuário primeiro."
-    
+
+    con = sqlite3.connect("sistema.db")
+    cursor = con.cursor()
+    cursor.execute("SELECT id, nome FROM usuario")
+    usuarios = cursor.fetchall()
+    con.close()
+
     if request.method == "POST":
-        nome = request.form.get("nome_do_projeto") 
+        nome = request.form.get("nome_do_projeto")
         data_inicial = request.form.get("data_inicio")
         data_final = request.form.get("data_final")
+        usuario_id = request.form.get("usuario_id")
 
         if data_final <= data_inicial:
             return "A data final do projeto não pode ser menor que a data inicial"
 
         con = sqlite3.connect("sistema.db")
         cursor = con.cursor()
-
         cursor.execute(
-            "INSERT INTO projeto VALUES (?, ?, ?)",
-            (nome, data_inicial, data_final)
+            "INSERT INTO projeto (nome_do_projeto, data_inicio, data_fim, usuario_id) VALUES (?, ?, ?, ?)",
+            (nome, data_inicial, data_final, usuario_id)
         )
-
         con.commit()
         con.close()
 
         return "Projeto cadastrado com sucesso"
 
-    return render_template("cadastro_projeto.html")
+    return render_template("cadastro_projeto.html", usuarios=usuarios)
 
 
 
 
-con.commit()
-con.close() 
+
 
 
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-#print('\nSelecione o responsável pelo projeto:')
-#    for i, usuario in enumerate(usuarios, start=1):
-#        print(f'{i} - {usuario[0]}')
-#
-#    escolha = int(input('Digite o número do responsável: '))
-#    responsavel = usuarios[escolha - 1][0]
-
-#função dedicada ao cadastro de usuario com validasção do termo de uso
-# def iniciar_cadastro_usuario():
-#     print('\nInsira os dados abaixo para iniciar o cadastro')
-
-#     nome = input('\nQual o seu nome? ' ).lower()
-#     data = input('\nQual sua data de nascimento (DD-MM-YYYY): ')
-#     telefone = input('\nQual seu numero de telefone? ')
-
-#     print('\nPara prosseguir com o cadastro, você deve aceitar os termos de uso.')
-
-#     while True : 
-    
-#         termo = input('\nVocê aceita os termos de uso? (s/n): ').lower()
-
-#         if termo != 's':
-#             print('\nCadastro não concluído. É necessário aceitar os termos de uso.')
-
-#         else :
-#             break     
-
-
-#     verif = cursor.execute('SELECT nome FROM usuario')
-
-#     usuarios = verif.fetchall()
-
-#     nomes_lp = [i[0] for i in usuarios] 
-
-#     if nome in nomes_lp :
-#         print('\nUsuario ja cadastrado')
-#         recomeco = input('\nDeseja recomeçar o cadastro? (s/n)').lower()  
-            
-#         if recomeco == 's':
-            
-#             iniciar_cadastro_usuario()
-            
-#         else:
-            
-#             print('\nCadastro encerrado.')   
-#             return
-
-#     else : 
-    
-#         cursor.execute('INSERT INTO usuario VALUES (?,?,?)',(nome,data,telefone))
-#         print('\nCadastro executado com sucesso')    
-#         con.commit()
-
-
-#função dedicada ao cadastro do projeto
-# def iniciar_cadastro_projeto():  
-
-#     cursor.execute('SELECT nome FROM usuario')
-#     usuarios = cursor.fetchall()
-
-#     if not usuarios:
-#         print('\nNão é possível cadastrar projeto sem usuários cadastrados.')
-#         return
-
-#     print('\nInsira os dados do projeto')
-
-#     nome_projeto = input('\nNome do projeto: ').lower()
-#     data_inicio = input('Data de início (DD-MM-YYYY): ')
-#     data_fim = input('Data de fim (DD-MM-YYYY): ')
-
-#     if data_fim < data_inicio:
-#         print('\nErro: a data de fim não pode ser menor que a data de início.')
-#         return
-
-
-#     cursor.execute(
-#         'INSERT INTO projeto VALUES (?,?,?)',
-#         (nome_projeto, data_inicio, data_fim)
-#     )
-
-#     print('\nProjeto cadastrado com sucesso!')
-#     con.commit()

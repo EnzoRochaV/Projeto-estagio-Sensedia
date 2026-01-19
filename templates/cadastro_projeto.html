@@ -18,12 +18,19 @@
         <label>Data de termino:</label><br>
         <input type="date" name="data_final"><br><br>
 
+        <label>Responsável pelo projeto:</label><br>
+        <select name="usuario_id" required>
+            <option value="">Selecione um usuário</option>
+
+            {% for u in usuarios %}
+                <option value="{{ u[0] }}">{{ u[1] }}</option>
+            {% endfor %}
+
+        </select><br><br>
+
         <button type="submit">Cadastrar</button>
 
-
     </form>
-
-    
 
 </body>
 </html>
