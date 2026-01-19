@@ -3,21 +3,66 @@
 <head>
     <title>Pagina inicial</title>
 </head>
+
 <body>
 
-    <h1>Sistema de Projetos</h1>
+{% if msg == "usuario_ok" %}
+<script>
+alert("Usuário cadastrado com sucesso!");
+</script>
+{% elif msg == "usuario_duplicado" %}
+<script>
+alert("Usuário já cadastrado.");
+</script>
+{% elif msg == "projeto_ok" %}
+<script>
+alert("Projeto cadastrado com sucesso!");
+</script>
+{% elif msg == "projeto_duplicado" %}
+<script>
+alert("Projeto já cadastrado.");
+</script>
+{% endif %}
 
-    <a href="/usuarios">
-        <button>Cadastrar Usuário</button>
-    </a>    
-    
-    <br><br>
-    
-    <a href="/projetos">
-        <button>Cadastrar projeto</button>
-    </a>    
+<h1>Sistema de Projetos</h1>
+
+<a href="/usuarios">
+    <button>Cadastrar Usuário</button>
+</a>
+
+<br><br>
+
+<a href="/projetos">
+    <button>Cadastrar projeto</button>
+</a>
+
+<hr>
+
+<h2>Projetos cadastrados</h2>
+
+{% if projetos and projetos|length > 0 %}
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Projeto</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Responsável</th>
+            <th>Telefone</th>
+        </tr>
+
+        {% for p in projetos %}
+        <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+            <td>{{ p[2] }}</td>
+            <td>{{ p[3] }}</td>
+            <td>{{ p[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Nenhum projeto cadastrado ainda.</p>
+{% endif %}
 
 </body>
 </html>
-
-
