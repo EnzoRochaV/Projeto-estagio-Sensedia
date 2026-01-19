@@ -59,12 +59,19 @@ def home():
         JOIN usuario u ON p.usuario_id = u.id
         ORDER BY p.id DESC
     """)
-
     projetos = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT nome, telefone, data_nascimento
+        FROM usuario
+        ORDER BY id DESC
+    """)
+    usuarios = cursor.fetchall()
+
     con.close()
 
     msg = request.args.get("msg")
-    return render_template("index.html", projetos=projetos, msg=msg)
+    return render_template("index.html", projetos=projetos, usuarios=usuarios, msg=msg)
 
 #rota de cadastro de usuario
 @app.route("/usuarios", methods=["GET", "POST"])

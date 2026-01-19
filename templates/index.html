@@ -20,36 +20,64 @@
     <button>Cadastrar Usuário</button>
 </a>
 
+<br><br>
+
 <a href="/projetos">
     <button>Cadastrar projeto</button>
 </a>
-
+<br><br>
 <hr>
+
+<h2>Usuários cadastrados</h2>
+
+{% if usuarios and usuarios|length > 0 %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Nome</th>
+        <th>Telefone</th>
+        <th>Data de nascimento</th>
+    </tr>
+
+    {% for u in usuarios %}
+    <tr>
+        <td>{{ u[0] }}</td>
+        <td>{{ u[1] }}</td>
+        <td>{{ u[2][8:10] }}/{{ u[2][5:7] }}/{{ u[2][0:4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Nenhum usuário cadastrado ainda.</p>
+{% endif %}
+<br><br>
+<hr>
+
+
 
 <h2>Projetos cadastrados</h2>
 
 {% if projetos and projetos|length > 0 %}
-    <table border="1" cellpadding="8" cellspacing="0">
-        <tr>
-            <th>Projeto</th>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Responsável</th>
-            <th>Telefone</th>
-        </tr>
+<table border="1" cellpadding="8" cellspacing="0">
+    <tr>
+        <th>Projeto</th>
+        <th>Início</th>
+        <th>Fim</th>
+        <th>Responsável</th>
+        <th>Telefone</th>
+    </tr>
 
-        {% for p in projetos %}
-        <tr>
-            <td>{{ p[0] }}</td>
-            <td>{{ p[1][8:10] }}/{{ p[1][5:7] }}/{{ p[1][0:4] }}</td>
-            <td>{{ p[2][8:10] }}/{{ p[2][5:7] }}/{{ p[2][0:4] }}</td>
-            <td>{{ p[3] }}</td>
-            <td>{{ p[4] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    {% for p in projetos %}
+    <tr>
+        <td>{{ p[0] }}</td>
+        <td>{{ p[1][8:10] }}/{{ p[1][5:7] }}/{{ p[1][0:4] }}</td>
+        <td>{{ p[2][8:10] }}/{{ p[2][5:7] }}/{{ p[2][0:4] }}</td>
+        <td>{{ p[3] }}</td>
+        <td>{{ p[4] }}</td>
+    </tr>
+    {% endfor %}
+</table>
 {% else %}
-    <p>Nenhum projeto cadastrado ainda.</p>
+<p>Nenhum projeto cadastrado ainda.</p>
 {% endif %}
 
 </body>
