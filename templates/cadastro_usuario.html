@@ -5,6 +5,12 @@
 </head>
 <body>
 
+{% if msg == "usuario_duplicado" %}
+<script>alert("Usuário já cadastrado.");</script>
+{% elif msg == "termo_obrigatorio" %}
+<script>alert("É necessário aceitar os termos de uso.");</script>
+{% endif %}
+
 <h1>Cadastro de Usuário</h1>
 
 <form method="post">

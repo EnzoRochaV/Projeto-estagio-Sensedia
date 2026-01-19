@@ -5,32 +5,36 @@
 </head>
 <body>
 
-    <h1>Cadastro de Projeto</h1>
+{% if msg == "projeto_duplicado" %}
+<script>alert("Projeto já cadastrado.");</script>
+{% elif msg == "data_invalida" %}
+<script>alert("A data final do projeto não pode ser menor que a data inicial.");</script>
+{% endif %}
 
-    <form method="post">
+<h1>Cadastro de Projeto</h1>
 
-        <label>Nome do projeto:</label><br>
-        <input type="text" name="nome_projeto"><br><br>
+<form method="post">
 
-        <label>Data de inicio:</label><br>
-        <input type="date" name="data_inicio"><br><br>
+    <label>Nome do projeto:</label><br>
+    <input type="text" name="nome_projeto"><br><br>
 
-        <label>Data de termino:</label><br>
-        <input type="date" name="data_final"><br><br>
+    <label>Data de inicio:</label><br>
+    <input type="date" name="data_inicio"><br><br>
 
-        <label>Responsável pelo projeto:</label><br>
-        <select name="usuario_id" required>
-            <option value="">Selecione um usuário</option>
+    <label>Data de termino:</label><br>
+    <input type="date" name="data_final"><br><br>
 
-            {% for u in usuarios %}
-                <option value="{{ u[0] }}">{{ u[1] }}</option>
-            {% endfor %}
+    <label>Responsável:</label><br>
+    <select name="usuario_id">
+        {% for u in usuarios %}
+            <option value="{{ u[0] }}">{{ u[1] }}</option>
+        {% endfor %}
+    </select>
+    <br><br>
 
-        </select><br><br>
+    <button type="submit">Cadastrar</button>
 
-        <button type="submit">Cadastrar</button>
-
-    </form>
+</form>
 
 </body>
 </html>

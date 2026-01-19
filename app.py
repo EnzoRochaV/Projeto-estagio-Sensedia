@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS projeto (
 con.commit()
 con.close()
 
-
+#função para verificar se existe ususario
 def existe_usuario():
     con = sqlite3.connect("sistema.db")
     cursor = con.cursor()
@@ -41,7 +41,6 @@ def existe_usuario():
     total = cursor.fetchone()[0]
     con.close()
     return total > 0
-
 
 # rota homepage
 @app.route("/")
@@ -77,7 +76,7 @@ def cadastro_usuario():
         termo = request.form.get("termo")
 
         if not termo:
-            return "É necessario aceitar os termos de uso"
+            return redirect(url_for("cadastro_usuario", msg="termo_obrigatorio"))
 
         con = sqlite3.connect("sistema.db")
         cursor = con.cursor()
@@ -93,16 +92,16 @@ def cadastro_usuario():
 
         except sqlite3.IntegrityError:
             con.close()
-            return redirect(url_for("home", msg="usuario_duplicado"))
+            return redirect(url_for("cadastro_usuario", msg="usuario_duplicado"))
 
-    return render_template("cadastro_usuario.html")
+    msg = request.args.get("msg")
+    return render_template("cadastro_usuario.html", msg=msg)
 
 #rota de cadastro de projeto
 @app.route("/projetos", methods=["GET", "POST"])
 def cadastro_projeto():
     if not existe_usuario():
-        return "Para cadastrar um projeto, é necessário cadastrar um usuário primeiro."
-
+        return redirect(url_for("home", msg="precisa_usuario"))
 
     con = sqlite3.connect("sistema.db")
     cursor = con.cursor()
@@ -117,7 +116,7 @@ def cadastro_projeto():
         usuario_id = request.form.get("usuario_id")
 
         if data_final <= data_inicial:
-            return "A data final do projeto não pode ser menor que a data inicial"
+            return redirect(url_for("cadastro_projeto", msg="data_invalida"))
 
         con = sqlite3.connect("sistema.db")
         cursor = con.cursor()
@@ -133,10 +132,10 @@ def cadastro_projeto():
 
         except sqlite3.IntegrityError:
             con.close()
-            return redirect(url_for("home", msg="projeto_duplicado"))
+            return redirect(url_for("cadastro_projeto", msg="projeto_duplicado"))
 
-    return render_template("cadastro_projeto.html", usuarios=usuarios)
-
+    msg = request.args.get("msg")
+    return render_template("cadastro_projeto.html", usuarios=usuarios, msg=msg)
 
 if __name__ == "__main__":
     app.run(debug=True)
