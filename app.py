@@ -11,35 +11,85 @@ cursor = con.cursor()
 cursor.execute('CREATE TABLE IF NOT EXISTS usuario (nome TEXT, data_nascimento TEXT, telefone TEXT)')
 cursor.execute('CREATE TABLE IF NOT EXISTS projeto (nome_do_projeto TEXT, data_de_inicio TEXT, data_de_finalização TEXT)')
 
+#função para verificar a existencia de usuarios antes do cadastro de projetos
+def existe_usuario():
+    con = sqlite3.connect("sistema.db")
+    cursor = con.cursor()
 
+    cursor.execute("SELECT COUNT(*) FROM usuario")
+    total = cursor.fetchone()[0]
 
+    con.close()
 
+    return total > 0
+
+#rota flask para homepage
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-
+#rota flask para cadastro de ususarios
 @app.route("/usuarios", methods=["GET", "POST"])
 def cadastro_usuario():
     if request.method == "POST":
-        nome = request.form.get("nome") 
+        nome = request.form.get("nome")
         data = request.form.get("data_nascimento")
         telefone = request.form.get("telefone")
         termo = request.form.get("termo")
 
         if not termo:
             return "É necessario aceitar os termos de uso"
-        
+
+        con = sqlite3.connect("sistema.db")
+        cursor = con.cursor()
+
+        cursor.execute(
+            "INSERT INTO usuario VALUES (?, ?, ?)",
+            (nome, data, telefone)
+        )
+
+        con.commit()
+        con.close()
+
         return "Usuario cadastrado com sucesso"
+
     
     return render_template("cadastro_usuario.html")
 
 
+#rota flask para cadastro de projeto
+@app.route("/projetos", methods=["GET", "POST"])
+def cadastro_projeto():
+    
+    if not existe_usuario():
+        return "Para cadastrar um projeto, é necessário cadastrar um usuário primeiro."
+    
+    if request.method == "POST":
+        nome = request.form.get("nome_do_projeto") 
+        data_inicial = request.form.get("data_inicio")
+        data_final = request.form.get("data_final")
+
+        if data_final <= data_inicial:
+            return "A data final do projeto não pode ser menor que a data inicial"
+
+        con = sqlite3.connect("sistema.db")
+        cursor = con.cursor()
+
+        cursor.execute(
+            "INSERT INTO projeto VALUES (?, ?, ?)",
+            (nome, data_inicial, data_final)
+        )
+
+        con.commit()
+        con.close()
+
+        return "Projeto cadastrado com sucesso"
+
+    return render_template("cadastro_projeto.html")
 
 
 
-      
 
 con.commit()
 con.close() 
