@@ -1,84 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Pagina inicial</title>
+    <meta charset="UTF-8">
+    <title>Página inicial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
 
-{% if msg == "usuario_ok" %}
-<script>alert("Usuário cadastrado com sucesso!");</script>
-{% elif msg == "projeto_ok" %}
-<script>alert("Projeto cadastrado com sucesso!");</script>
-{% elif msg == "precisa_usuario" %}
-<script>alert("Para cadastrar um projeto, é necessário cadastrar um usuário primeiro.");</script>
-{% endif %}
+<div class="container">
+    <div class="card">
 
-<h1>Sistema de Projetos</h1>
+        {% if msg == "usuario_ok" %}
+        <div class="alert alert-success">
+            Usuário cadastrado com sucesso!
+        </div>
+        {% elif msg == "projeto_ok" %}
+        <div class="alert alert-success">
+            Projeto cadastrado com sucesso!
+        </div>
+        {% elif msg == "precisa_usuario" %}
+        <div class="alert alert-error">
+            Para cadastrar um projeto, é necessário cadastrar um usuário primeiro.
+        </div>
+        {% endif %}
 
-<a href="/usuarios">
-    <button>Cadastrar Usuário</button>
-</a>
+        <header class="page-header">
+            <h1>Sistema de Projetos</h1>
+            <div>
+                <a href="/usuarios" class="btn btn-primary">Cadastrar Usuário</a>
+                <a href="/projetos" class="btn">Cadastrar Projeto</a>
+            </div>
+        </header>
 
-<br><br>
+        <h2>Usuários cadastrados</h2>
 
-<a href="/projetos">
-    <button>Cadastrar projeto</button>
-</a>
-<br><br>
-<hr>
+        {% if usuarios and usuarios|length > 0 %}
+        <div class="table-wrap">
+            <table>
+                <tr>
+                    <th>Nome</th>
+                    <th>Telefone</th>
+                    <th>Data de nascimento</th>
+                </tr>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u[0] }}</td>
+                    <td>{{ u[1] }}</td>
+                    <td>{{ u[2][8:10] }}/{{ u[2][5:7] }}/{{ u[2][0:4] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <p>Nenhum usuário cadastrado ainda.</p>
+        {% endif %}
 
-<h2>Usuários cadastrados</h2>
+        <h2>Projetos cadastrados</h2>
 
-{% if usuarios and usuarios|length > 0 %}
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Nome</th>
-        <th>Telefone</th>
-        <th>Data de nascimento</th>
-    </tr>
+        {% if projetos and projetos|length > 0 %}
+        <div class="table-wrap">
+            <table>
+                <tr>
+                    <th>Projeto</th>
+                    <th>Início</th>
+                    <th>Fim</th>
+                    <th>Responsável</th>
+                    <th>Telefone</th>
+                </tr>
+                {% for p in projetos %}
+                <tr>
+                    <td>{{ p[0] }}</td>
+                    <td>{{ p[1][8:10] }}/{{ p[1][5:7] }}/{{ p[1][0:4] }}</td>
+                    <td>{{ p[2][8:10] }}/{{ p[2][5:7] }}/{{ p[2][0:4] }}</td>
+                    <td>{{ p[3] }}</td>
+                    <td>{{ p[4] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% else %}
+        <p>Nenhum projeto cadastrado ainda.</p>
+        {% endif %}
 
-    {% for u in usuarios %}
-    <tr>
-        <td>{{ u[0] }}</td>
-        <td>{{ u[1] }}</td>
-        <td>{{ u[2][8:10] }}/{{ u[2][5:7] }}/{{ u[2][0:4] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>Nenhum usuário cadastrado ainda.</p>
-{% endif %}
-<br><br>
-<hr>
-
-
-
-<h2>Projetos cadastrados</h2>
-
-{% if projetos and projetos|length > 0 %}
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Projeto</th>
-        <th>Início</th>
-        <th>Fim</th>
-        <th>Responsável</th>
-        <th>Telefone</th>
-    </tr>
-
-    {% for p in projetos %}
-    <tr>
-        <td>{{ p[0] }}</td>
-        <td>{{ p[1][8:10] }}/{{ p[1][5:7] }}/{{ p[1][0:4] }}</td>
-        <td>{{ p[2][8:10] }}/{{ p[2][5:7] }}/{{ p[2][0:4] }}</td>
-        <td>{{ p[3] }}</td>
-        <td>{{ p[4] }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>Nenhum projeto cadastrado ainda.</p>
-{% endif %}
+    </div>
+</div>
 
 </body>
 </html>

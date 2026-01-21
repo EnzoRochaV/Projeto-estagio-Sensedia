@@ -1,33 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Cadastro de Usuário</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-{% if msg == "usuario_duplicado" %}
-<script>alert("Usuário já cadastrado.");</script>
-{% elif msg == "termo_obrigatorio" %}
-<script>alert("É necessário aceitar os termos de uso.");</script>
-{% endif %}
+<div class="container">
+    <div class="card">
 
-<h1>Cadastro de Usuário</h1>
+        {% if msg == "usuario_duplicado" %}
+        <div class="alert alert-error">
+            Usuário já cadastrado.
+        </div>
+        {% elif msg == "termo_obrigatorio" %}
+        <div class="alert alert-error">
+            É necessário aceitar os termos de uso.
+        </div>
+        {% endif %}
 
-<form method="post">
-    <label>Nome:</label><br>
-    <input type="text" name="nome"><br><br>
+        <h1>Cadastro de Usuário</h1>
 
-    <label>Data de nascimento:</label><br>
-    <input type="date" name="data_nascimento"><br><br>
+        <form method="post">
+            <label>Nome</label>
+            <input type="text" name="nome" required>
 
-    <label>Telefone:</label><br>
-    <input type="text" name="telefone"><br><br>
+            <label>Data de nascimento</label>
+            <input type="date" name="data_nascimento" required>
 
-    <input type="checkbox" name="termo">
-    Aceito os termos de uso<br><br>
+            <label>Telefone</label>
+            <input type="text" name="telefone" required>
 
-    <button type="submit">Cadastrar</button>
-</form>
+            <div class="checkbox">
+                <input type="checkbox" name="termo" id="termo">
+                <label for="termo">Aceito os termos de uso</label>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                <a href="/" class="btn btn-ghost">Voltar para Home</a>
+            </div>
+        </form>
+
+    </div>
+</div>
 
 </body>
 </html>

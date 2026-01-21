@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cadastro de projeto</title>
+    <meta charset="UTF-8">
+    <title>Cadastro de Projeto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
 
-{% if msg == "projeto_duplicado" %}
-<script>alert("Projeto já cadastrado.");</script>
-{% elif msg == "data_invalida" %}
-<script>alert("A data final do projeto não pode ser menor que a data inicial.");</script>
-{% endif %}
+<div class="container">
+    <div class="card">
 
-<h1>Cadastro de Projeto</h1>
+        {% if msg == "projeto_duplicado" %}
+        <div class="alert alert-error">
+            Projeto já cadastrado.
+        </div>
+        {% elif msg == "data_invalida" %}
+        <div class="alert alert-error">
+            A data final do projeto não pode ser menor que a data inicial.
+        </div>
+        {% endif %}
 
-<form method="post">
+        <h1>Cadastro de Projeto</h1>
 
-    <label>Nome do projeto:</label><br>
-    <input type="text" name="nome_projeto"><br><br>
+        <form method="post">
+            <label>Nome do projeto</label>
+            <input type="text" name="nome_projeto" required>
 
-    <label>Data de inicio:</label><br>
-    <input type="date" name="data_inicio"><br><br>
+            <div class="row">
+                <div>
+                    <label>Data de início</label>
+                    <input type="date" name="data_inicio" required>
+                </div>
+                <div>
+                    <label>Data de término</label>
+                    <input type="date" name="data_final" required>
+                </div>
+            </div>
 
-    <label>Data de termino:</label><br>
-    <input type="date" name="data_final"><br><br>
+            <label>Responsável</label>
+            <select name="usuario_id" required>
+                {% for u in usuarios %}
+                <option value="{{ u[0] }}">{{ u[1] }}</option>
+                {% endfor %}
+            </select>
 
-    <label>Responsável:</label><br>
-    <select name="usuario_id">
-        {% for u in usuarios %}
-        <option value="{{ u[0] }}">{{ u[1] }}</option>
-        {% endfor %}
-    </select>
-    <br><br>
+            <div>
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+                <a href="/" class="btn btn-ghost">Voltar para Home</a>
+            </div>
+        </form>
 
-    <button type="submit">Cadastrar</button>
-
-</form>
+    </div>
+</div>
 
 </body>
 </html>
